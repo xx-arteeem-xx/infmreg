@@ -11,6 +11,10 @@
       return {
         problemSelected: 0,
 
+        workerid: 0,
+        workerphone: "+7",
+        description: "",
+
         problem_type: "",
         workers: [],
         problems: [],
@@ -94,6 +98,33 @@
             });
       },
 
+      async setRequests() {
+        const url = `http://${this.apiHost}:${this.apiPort}/api/set/request/`;
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ 
+              building: this.building,
+              room: this.room,
+              problemtypeid: this.problemtypeid,
+              workerid: this.workerid,
+              workerphone: this.workerphone,
+              description: this.description,
+             })
+          });
+          if (!response.ok){
+            throw new Error(`Response status: ${response.status}`);
+          };
+
+          const json = await response.json();
+          console.log(json);
+        } catch (error) {
+          console.error(error.message);
+        }
+      }
     },
 
     mounted() {
@@ -107,12 +138,15 @@
 
 <template>
   <div class="container my-5">
+
     <img src="../assets/logo.png" class="mb-3">
     <h1>Регистрация обращения</h1>
-    <p class="lead mb-3">Текущая аудитория: {{ building }}-{{ room }}
-      <br>Вид проблемы: {{ problem_type }}</p>
-    <form :action="$route.fullPath">
+    <p class="lead mb-3">
+      Текущая аудитория: {{ building }}-{{ room }}
+      <br>Вид проблемы: {{ problem_type }}
+    </p>
 
+    <form @submit.prevent="setRequests">
       <div class="input-group mb-3">
         <label class="input-group-text" for="inputGroupSelect02">
           <i class="fa-solid fa-land-mine-on"></i>
@@ -142,8 +176,8 @@
           <label class="input-group-text" for="inputGroupSelect01">
             <i class="fa-solid fa-user"></i>
           </label>
-          <select class="form-select" id="inputGroupSelect01">
-            <option selected>ФИО</option>
+          <select class="form-select" id="inputGroupSelect01" v-model="workerid">
+            <option value="0">ФИО</option>
             <option v-for="(worker, id) in workers" :value="id+1">{{ worker.name }}</option>
           </select>
         </div>
@@ -152,20 +186,20 @@
           <span class="input-group-text" id="basic-addon1">
             <i class="fa-solid fa-phone"></i>
           </span>
-          <input type="text" class="form-control" placeholder="Номер телефона" maxlength="12" minlength="12" value="+7">
+          <input type="text" class="form-control" placeholder="Номер телефона" maxlength="12" minlength="12" v-model="workerphone">
         </div>
 
         <div class="input-group" >
           <span class="input-group-text">
             <i class="fa-solid fa-land-mine-on"></i>
           </span>
-          <textarea class="form-control" placeholder="Опишите свою проблему"></textarea>
+          <textarea class="form-control" placeholder="Опишите свою проблему" v-model="description"></textarea>
         </div>
 
         <button type="submit" class="btn btn-outline-secondary my-3">Отправить</button>
       </div>
-
     </form>
+
   </div>
 </template>
 
