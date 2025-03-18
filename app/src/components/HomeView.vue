@@ -20,6 +20,9 @@
         problems: [],
         problem: [],
 
+        errors: [],
+        successes: [],
+
         apiHost: import.meta.env.VITE_API_HOST,
         apiPort: import.meta.env.VITE_API_PORT
       }
@@ -99,6 +102,30 @@
       },
 
       async setRequests() {
+        if ((this.building < 1) || (this.building > 5)) {
+          this.errors.push("Ошибка! Корпус указан неверно.")
+        }
+
+        if ((this.problemtypeid < 1) || (this.problemtypeid > 3)) {
+          this.errors.push("Ошибка! Не существует такого вида проблемы.")
+        }
+
+        if (this.workerid < 1) {
+          this.errors.push("Внимание! Необходимо указать ваше ФИО.")
+        }
+
+        if (this.workerphone.length != 12) {
+          this.errors.push("Внимание! Неверно указан номер телефона.")
+        }
+
+        if (this.description.length < 15) {
+          this.errors.push("Внимание! Описание слишком короткое.")
+        }
+
+        if (this.errors.length > 0) {
+          return
+        }
+
         const url = `http://${this.apiHost}:${this.apiPort}/api/set/request/`;
         try {
           const response = await fetch(url, {
@@ -113,14 +140,22 @@
               workerid: this.workerid,
               workerphone: this.workerphone,
               description: this.description,
-             })
+            })
           });
           if (!response.ok){
             throw new Error(`Response status: ${response.status}`);
           };
 
           const json = await response.json();
-          console.log(json);
+          
+          if (json.message == "success") {
+            this.successes.push("По вашему обращению была создана заявка. Благодарим за обращение!");
+          } else {
+            this.errors.push("Внутренняя ошибка сервера... Обратитесь в техническую поддержку.")
+          }
+          setTimeout(() => {
+            location.reload()
+          }, 1500);
         } catch (error) {
           console.error(error.message);
         }
@@ -145,6 +180,15 @@
       Текущая аудитория: {{ building }}-{{ room }}
       <br>Вид проблемы: {{ problem_type }}
     </p>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" v-for="error in errors">
+      {{ error }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="alert alert-success alert-dismissible fade show" role="alert" v-for="success in successes">
+      {{ success }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
     <form @submit.prevent="setRequests">
       <div class="input-group mb-3">
@@ -176,8 +220,8 @@
           <label class="input-group-text" for="inputGroupSelect01">
             <i class="fa-solid fa-user"></i>
           </label>
-          <select class="form-select" id="inputGroupSelect01" v-model="workerid">
-            <option value="0">ФИО</option>
+          <select class="form-select" id="inputGroupSelect01" v-model="workerid" required>
+            <option value="0" disabled>ФИО</option>
             <option v-for="(worker, id) in workers" :value="id+1">{{ worker.name }}</option>
           </select>
         </div>
@@ -186,7 +230,7 @@
           <span class="input-group-text" id="basic-addon1">
             <i class="fa-solid fa-phone"></i>
           </span>
-          <input type="text" class="form-control" placeholder="Номер телефона" maxlength="12" minlength="12" v-model="workerphone">
+          <input type="text" class="form-control" placeholder="Номер телефона" v-model="workerphone">
         </div>
 
         <div class="input-group" >

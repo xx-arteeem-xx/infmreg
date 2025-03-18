@@ -77,13 +77,13 @@ app.post('/api/set/request/', (req, res) => {
   db.none(insert)
     .then(() => {
       res.json({
-        data: data,
-        query: insert,
-        message: "Data in DB!"
+        message: "success"
       })
     })
     .catch(error => {
-      res.json({error})
+      res.json({
+        message: error
+      })
     });
   
 
