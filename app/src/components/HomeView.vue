@@ -109,9 +109,6 @@
   <div class="container my-5">
     <img src="../assets/logo.png" class="mb-3">
     <h1>Регистрация обращения</h1>
-    <p class="lead">
-      {{ apiHost+":"+apiPort }}
-    </p>
     <p class="lead mb-3">Текущая аудитория: {{ building }}-{{ room }}
       <br>Вид проблемы: {{ problem_type }}</p>
     <form :action="$route.fullPath">
