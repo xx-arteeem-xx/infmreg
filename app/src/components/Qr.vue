@@ -9,16 +9,15 @@
                 problemtypeid: 1,
 
                 apiHost: import.meta.env.VITE_API_HOST,
-                apiPort: import.meta.env.VITE_API_PORT,
 
-                link: `http://${this.apiHost}:${this.apiPort}/${this.building}/${this.room}/${this.problemtypeid}/`,
+                link: `http://${this.apiHost}:8000/${this.building}/${this.room}/${this.problemtypeid}/`,
                 qrcode: useQRCode(this.link)
             }
         },
         
         methods: {
             generate() {
-                this.link = `http://${this.apiHost}:${this.apiPort}/${this.building}/${this.room}/${this.problemtypeid}/`
+                this.link = `http://${this.apiHost}:8000/${this.building}/${this.room}/${this.problemtypeid}/`
                 this.qrcode = useQRCode(this.link)
             }
         },
