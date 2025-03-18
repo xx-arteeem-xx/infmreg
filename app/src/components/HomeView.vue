@@ -24,7 +24,7 @@
       },
 
       getProblemType() {
-          fetch(`http://localhost:3000/api/get/problem_type/${this.problemtypeid}`, {
+          fetch(`http://85.209.9.166:3000/api/get/problem_type/${this.problemtypeid}`, {
             method: "GET",
             headers: {
               
@@ -41,7 +41,7 @@
       },
 
       getWorkers() {
-          fetch(`http://localhost:3000/api/get/workers`, {
+          fetch(`http://85.209.9.166:3000/api/get/workers`, {
             method: "GET",
             headers: {
               
@@ -58,7 +58,7 @@
       },
 
       getProblems() {
-          fetch(`http://localhost:3000/api/get/problems/${this.problemtypeid}`, {
+          fetch(`http://85.209.9.166:3000/api/get/problems/${this.problemtypeid}`, {
             method: "GET",
             headers: {
               
@@ -75,7 +75,7 @@
       },
 
       getProblem() {
-          fetch(`http://localhost:3000/api/get/problem/${this.problemSelected}`, {
+          fetch(`http://85.209.9.166:3000/api/get/problem/${this.problemSelected}`, {
             method: "GET",
             headers: {
               
