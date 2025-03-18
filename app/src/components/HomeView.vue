@@ -9,52 +9,18 @@
 
     data() {
       return {
-        techProblemSelected: 0,
-
-        dataset: {
-          workers: [
-            "Воробьёв Казимир Оскарович",
-            "Дмитриев Севастьян Викторович",
-            "Константинов Эрик Петрович",
-            "Цветков Ярослав Ростиславович",
-            "Белозёров Ибрагил Робертович",
-            "Кулагина Виргиния Львовна",
-            "Гурьева Лили Арсеньевна",
-            "Дмитриева Юфеза Протасьевна",
-            "Дорофеева Силика Николаевна",
-            "Тимофеева Валентина Артёмовна"
-          ],
-          problems: {
-            tech: [
-              {
-                name: "Не работает монитор",
-                solutions: ["Проверьте, включен ли монитор", "Второй пункт"]
-              },
-              {
-                name: "Не работает проектор",
-                solutions: ["Проверьте, включен ли проектор", "Второй пункт"]
-              },
-              {
-                name: "Не включется ПК",
-                solutions: ["Проверьте, включен ли ПК", "Второй пункт"]
-              },
-              {
-                name: "Не работает интернет",
-                solutions: ["Проверьте, включен ли интернет", "Второй пункт"]
-              }
-            ]
-          }
-        },
+        problemSelected: 0,
 
         problem_type: "",
         workers: [],
-        problems: []
+        problems: [],
+        problem: []
       }
     },
 
     methods: {
       needReg() {
-        this.techProblemSelected = 1000
+        this.problemSelected = 1000
       },
 
       getProblemType() {
@@ -73,6 +39,7 @@
               console.error(err);
             });
       },
+
       getWorkers() {
           fetch(`http://localhost:3000/api/get/workers`, {
             method: "GET",
@@ -88,12 +55,48 @@
             .catch((err) => {
               console.error(err);
             });
-      }
+      },
+
+      getProblems() {
+          fetch(`http://localhost:3000/api/get/problems/${this.problemtypeid}`, {
+            method: "GET",
+            headers: {
+              
+            },
+          })
+            .then((response) => {
+              response.json().then((data) => {
+                this.problems = data
+              });
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+      },
+
+      getProblem() {
+          fetch(`http://localhost:3000/api/get/problem/${this.problemSelected}`, {
+            method: "GET",
+            headers: {
+              
+            },
+          })
+            .then((response) => {
+              response.json().then((data) => {
+                this.problem = data[0]
+              });
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+      },
+
     },
 
     mounted() {
       this.getProblemType();
       this.getWorkers();
+      this.getProblems();
     }
   }
   
@@ -111,17 +114,17 @@
         <label class="input-group-text" for="inputGroupSelect02">
           <i class="fa-solid fa-land-mine-on"></i>
         </label>
-        <select class="form-select" id="inputGroupSelect02" v-model="techProblemSelected">
+        <select class="form-select" id="inputGroupSelect02" v-model="problemSelected" @change="getProblem()">
           <option value="0">Выберите проблему</option>
-          <option v-for="(techProblem, id) in dataset.problems.tech" :value="id+1">{{ techProblem.name }}</option>
+          <option v-for="problem in problems" :value="problem.id">{{ problem.name }}</option>
           <option value="1000">Другое</option>
         </select>
       </div>
 
-      <div class="problemSolution" v-if="(techProblemSelected > 0) && (techProblemSelected < 1000)">
+      <div class="problemSolution" v-if="(problemSelected > 0) && (problemSelected < 1000)">
         <h3>Попробуйте выполнить следующие шаги:</h3>
         <ol>
-          <li v-for="(solution, id) in dataset.problems.tech[techProblemSelected-1].solutions">
+          <li v-for="solution in problem.solutions">
             {{ solution }}
           </li>
         </ol>
@@ -131,7 +134,7 @@
         </button>
       </div>
 
-      <div class="ifNeedReg" v-if="techProblemSelected == 1000">
+      <div class="ifNeedReg" v-if="problemSelected == 1000">
         <div class="input-group mb-3">
           <label class="input-group-text" for="inputGroupSelect01">
             <i class="fa-solid fa-user"></i>

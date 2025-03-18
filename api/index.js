@@ -29,6 +29,26 @@ app.get('/api/get/workers', (req, res) => {
     })
 });
 
+app.get('/api/get/problems/:id', (req, res) => {
+  db.any(`SELECT id, name, solutions FROM problems WHERE problemtypeid = ${req.params.id}`)
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((error) => {
+      console.log('ERROR:', error)
+    })
+});
+
+app.get('/api/get/problem/:id', (req, res) => {
+  db.any(`SELECT id, name, solutions FROM problems WHERE id = ${req.params.id}`)
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((error) => {
+      console.log('ERROR:', error)
+    })
+});
+
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)
 })
