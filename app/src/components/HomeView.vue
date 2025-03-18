@@ -11,12 +11,6 @@
       return {
         techProblemSelected: 0,
 
-        problemTypes: [
-          "Проблемa с техникой",
-          "Проблемa с мебелью",
-          "Проблемa с электричеством"
-        ],
-
         dataset: {
           workers: [
             "Воробьёв Казимир Оскарович",
@@ -50,16 +44,59 @@
               }
             ]
           }
-        }
+        },
+
+        problem_type: "",
+        workers: [],
+        problems: []
       }
     },
 
     methods: {
       needReg() {
         this.techProblemSelected = 1000
+      },
+
+      getProblemType() {
+          fetch(`http://localhost:3000/api/get/problem_type/${this.problemtypeid}`, {
+            method: "GET",
+            headers: {
+              
+            },
+          })
+            .then((response) => {
+              response.json().then((data) => {
+                this.problem_type = data[0].name
+              });
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+      },
+      getWorkers() {
+          fetch(`http://localhost:3000/api/get/workers`, {
+            method: "GET",
+            headers: {
+              
+            },
+          })
+            .then((response) => {
+              response.json().then((data) => {
+                this.workers = data
+              });
+            })
+            .catch((err) => {
+              console.error(err);
+            });
       }
+    },
+
+    mounted() {
+      this.getProblemType();
+      this.getWorkers();
     }
   }
+  
 </script>
 
 <template>
@@ -67,7 +104,7 @@
     <img src="../assets/logo.png" class="mb-3">
     <h1>Регистрация обращения</h1>
     <p class="lead mb-3">Текущая аудитория: {{ building }}-{{ room }}
-      <br>Вид проблемы: {{ problemTypes[problemtypeid] }}</p>
+      <br>Вид проблемы: {{ problem_type }}</p>
     <form :action="$route.fullPath">
 
       <div class="input-group mb-3">
@@ -101,7 +138,7 @@
           </label>
           <select class="form-select" id="inputGroupSelect01">
             <option selected>ФИО</option>
-            <option v-for="(worker, id) in dataset.workers" :value="id+1">{{ worker }}</option>
+            <option v-for="(worker, id) in workers" :value="id+1">{{ worker.name }}</option>
           </select>
         </div>
 

@@ -9,8 +9,18 @@ app.use(cors())
 
 
 
-app.get('/api/getusers/', (req, res) => {
-  db.any('SELECT * FROM users ORDER BY id ASC')
+app.get('/api/get/problem_type/:id', (req, res) => {
+  db.any(`SELECT id, name FROM problem_types WHERE id = ${req.params.id}`)
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((error) => {
+      console.log('ERROR:', error)
+    })
+});
+
+app.get('/api/get/workers', (req, res) => {
+  db.any(`SELECT id, name FROM workers`)
     .then((data) => {
       res.json(data);
     })
