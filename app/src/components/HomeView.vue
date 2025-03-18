@@ -14,7 +14,10 @@
         problem_type: "",
         workers: [],
         problems: [],
-        problem: []
+        problem: [],
+
+        apiHost: import.meta.env.VITE_API_HOST,
+        apiPort: import.meta.env.VITE_API_PORT
       }
     },
 
@@ -24,7 +27,7 @@
       },
 
       getProblemType() {
-          fetch(`http://85.209.9.166:3000/api/get/problem_type/${this.problemtypeid}`, {
+          fetch(`http://${this.apiHost}:${this.apiPort}/api/get/problem_type/${this.problemtypeid}`, {
             method: "GET",
             headers: {
               
@@ -41,7 +44,7 @@
       },
 
       getWorkers() {
-          fetch(`http://85.209.9.166:3000/api/get/workers`, {
+          fetch(`http://${this.apiHost}:${this.apiPort}/api/get/workers`, {
             method: "GET",
             headers: {
               
@@ -58,7 +61,7 @@
       },
 
       getProblems() {
-          fetch(`http://85.209.9.166:3000/api/get/problems/${this.problemtypeid}`, {
+          fetch(`http://${this.apiHost}:${this.apiPort}/api/get/problems/${this.problemtypeid}`, {
             method: "GET",
             headers: {
               
@@ -75,7 +78,7 @@
       },
 
       getProblem() {
-          fetch(`http://85.209.9.166:3000/api/get/problem/${this.problemSelected}`, {
+          fetch(`http://${this.apiHost}:${this.apiPort}/api/get/problem/${this.problemSelected}`, {
             method: "GET",
             headers: {
               
